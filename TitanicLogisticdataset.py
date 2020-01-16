@@ -55,7 +55,7 @@ def TitanicLogistic():
     show()
 
     # Step 3 : Data Cleaning
-    titanic_data.drop("zero",axis=1,inplace=True)
+    titanic_data.drop("zero", axis=1, inplace=True)
 
     print("First 5 entries from loaded dataset after removing zero column")
     print(titanic_data.head(5))
@@ -64,9 +64,46 @@ def TitanicLogistic():
     print(pd.get_dummies(titanic_data["Sex"]))
 
     print("Values of sex column after removing one field")
-    Sex=pd.get_dummies(titanic_data["Sex"],drop_first=True)
+    Sex = pd.get_dummies(titanic_data["Sex"], drop_first=True)
     print(Sex.head(5))
-    
+
+    print("values of Plass column after removing one field")
+    pclass = pd.get_dummies(titanic_data["Pclass"], drop_first=True)
+    print(pclass.head(5))
+
+    print("values of data set after concatenating new columns")
+    titanic_data = pd.concat([titanic_data, Sex, pclass], axis=1)
+    print(titanic_data.head(5))
+
+    print("values of data set after removing irrelevent columns")
+    titanic_data.drop(["Sex", "sibsp", "Parch", "Embarked"], axis=1, inplace=True)
+    print(titanic_data.head(5))
+
+    x = titanic_data.drop("Survived", axis=1)
+    y = titanic_data["Survived"]
+
+    # print(y)
+
+    # Step 4 : Data Training
+    xtrain, xtest, ytrain, ytest = train_test_split(x, y, test_size=0.5)
+
+    logmodel = LogisticRegression()
+
+    logmodel.fit(xtrain, ytrain)
+
+    # Step4 : Data Testing
+    prediction = logmodel.predict(xtest)
+
+    # Step 5 : Calculate Accuracy
+    print("Classification report of Logistic Regression is :")
+    print(classification_report(ytest, prediction))
+
+    print("Confusion Matrix of Logistic Regression is : ")
+    print(confusion_matrix(ytest, prediction))
+
+    print("Accuracy of Logistic Regression is : ")
+    print(accuracy_score(ytest, prediction))
+
 
 def main():
     print("Supervised Machine Learning")
